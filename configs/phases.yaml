@@ -1,0 +1,25 @@
+# Phase rules: a window belongs to a phase when all of its instruments are
+# co-present. The most specific matching rule wins.
+#
+# These are for laparoscopic cholecystectomy, loosely following the Cholec80
+# phase taxonomy. Swap the file for a different procedure — nothing in the
+# pipeline hard-codes these names.
+phases:
+  - name: preparation
+    instruments: [grasper]
+  - name: calot_triangle_dissection
+    instruments: [grasper, hook]
+  - name: clipping_and_cutting
+    instruments: [clipper, scissors]
+  - name: clipping
+    instruments: [clipper]
+  - name: cutting
+    instruments: [scissors]
+  - name: gallbladder_dissection
+    instruments: [hook, bipolar]
+  - name: coagulation
+    instruments: [bipolar]
+  - name: cleaning
+    instruments: [irrigator]
+  - name: gallbladder_retraction
+    instruments: [specimen_bag]

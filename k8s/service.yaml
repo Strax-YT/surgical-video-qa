@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svqa-api
+  labels: { app: svqa-api }
+spec:
+  type: ClusterIP
+  selector: { app: svqa-api }
+  ports:
+    - { name: http, port: 80, targetPort: http }

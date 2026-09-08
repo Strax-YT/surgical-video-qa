@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: svqa-api
+  labels: { app: svqa-api }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: svqa-api }
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: { maxSurge: 1, maxUnavailable: 0 }
+  template:
+    metadata:
+      labels: { app: svqa-api }
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: api
+          image: surgical-video-qa:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - { name: http, containerPort: 8000 }
+          envFrom:
+            - configMapRef: { name: svqa-config }
+            - secretRef: { name: svqa-secrets }
+          resources:
+            # A model-serving pod's floor is the resident set, not the code.
+            # Requests sized for detector-only; limits leave room for one SAM.
+            requests: { cpu: "500m", memory: "1Gi" }
+            limits:   { cpu: "2",    memory: "4Gi" }
+          # Startup probe carries the cold-start cost so liveness can stay
+          # tight — without it, a slow first model load looks like a hang and
+          # the kubelet restarts the pod in a loop.
+          startupProbe:
+            httpGet: { path: /healthz, port: http }
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            periodSeconds: 20
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet: { path: /readyz, port: http }
+            periodSeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - { name: data, mountPath: /app/data }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+      volumes:
+        # emptyDir is fine for the vector index in this demo; a real deployment
+        # uses a PVC or moves Chroma to a managed service, because two replicas
+        # with separate emptyDirs will not share an index.
+        - name: data
+          emptyDir: { sizeLimit: 5Gi }

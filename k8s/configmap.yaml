@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: svqa-config
+data:
+  SVQA_BACKEND: "stub"
+  SVQA_NEO4J_URI: "bolt://neo4j:7687"
+  SVQA_NEO4J_USER: "neo4j"
+  SVQA_CHROMA_PATH: "/app/data/artifacts/chroma"
+  SVQA_MODEL_CACHE_SIZE: "2"
+  SVQA_LOG_LEVEL: "INFO"
+  # Warm the detector at boot; SAM stays lazy because it is the expensive load.
+  SVQA_WARMUP_KEYS: "detector"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: svqa-secrets
+type: Opaque
+stringData:
+  # Local development only. Real clusters get these from a secret manager.
+  SVQA_NEO4J_PASSWORD: "localdevpassword"
+  SVQA_GEMINI_API_KEY: ""

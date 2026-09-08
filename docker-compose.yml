@@ -1,0 +1,38 @@
+services:
+  neo4j:
+    image: neo4j:5.26-community
+    environment:
+      NEO4J_AUTH: neo4j/localdevpassword
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_server_memory_heap_max__size: 1G
+    ports:
+      - "7474:7474"   # browser
+      - "7687:7687"   # bolt
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build: .
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    environment:
+      SVQA_BACKEND: ${SVQA_BACKEND:-stub}
+      SVQA_NEO4J_URI: bolt://neo4j:7687
+      SVQA_NEO4J_USER: neo4j
+      SVQA_NEO4J_PASSWORD: localdevpassword
+      SVQA_CHROMA_PATH: /app/data/artifacts/chroma
+      SVQA_GEMINI_API_KEY: ${SVQA_GEMINI_API_KEY:-}
+      SVQA_MODEL_CACHE_SIZE: 2
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  neo4j_data:

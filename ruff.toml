@@ -1,0 +1,15 @@
+line-length = 100
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RET", "ARG", "PTH", "BLE"]
+ignore = [
+    "E501",    # line length is handled by the formatter
+    "B008",    # FastAPI's Depends() in defaults is the documented pattern
+    "ARG001",  # unused args are normal in Protocol implementations and stubs
+    "ARG002",
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["ARG", "SIM"]
+"scripts/*" = ["PTH"]

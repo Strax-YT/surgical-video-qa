@@ -1,0 +1,35 @@
+# --- core service ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+PyYAML==6.0.2
+
+# --- vision ---
+ultralytics==8.3.58          # YOLOv8/v11 detection + training
+opencv-python-headless==4.10.0.84
+Pillow==11.1.0
+numpy==2.1.3
+
+# --- segmentation (install ONE of these; see README) ---
+# segment-anything-py==1.0    # Meta SAM / SAM2
+# mobile-sam==1.0             # MobileSAM
+# ultralytics ships FastSAM out of the box
+
+# --- audio ---
+faster-whisper==1.1.1
+
+# --- graph + vector ---
+neo4j==5.27.0
+chromadb==0.6.1
+sentence-transformers==3.3.1
+
+# --- llm ---
+google-generativeai==0.8.3
+
+# --- dev ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.28.1
+ruff==0.8.4

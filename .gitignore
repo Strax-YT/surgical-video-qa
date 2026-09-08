@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.pt
+*.pth
+*.onnx
+data/raw/*
+data/artifacts/*
+!data/raw/.gitkeep
+!data/artifacts/.gitkeep
+.pytest_cache/
+.ruff_cache/
+runs/
+bench_results/
